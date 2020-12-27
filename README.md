@@ -16,13 +16,13 @@
 
 ### Install
 
-```{bash}
-$ pip install scrapy
+```shell
+pip install scrapy
 ```
 
 ### Usage
 
-```{bash}
-$ cd crawl
-$ scrapy crawl news -O ../data/news.json
+```shell
+cd crawl
+scrapy crawl news -O ../data/news.json
 ```
