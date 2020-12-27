@@ -5,9 +5,11 @@ class NewsSpider(scrapy.Spider):
     name = 'news'
     allowed_domains = ['kmw.chinatimes.com']
     start_urls = ['http://kmw.chinatimes.com/Login.aspx']
-    total = 100
 
     def parse(self, response):
+        self.total = int(getattr(self, 'total', 30))
+        self.query = getattr(self, 'query', '韓國瑜')
+
         formdata = {
             '__EVENTTARGET': 'lbInfotimesLogin',
             '__EVENTARGUMENT': '',
@@ -37,7 +39,7 @@ class NewsSpider(scrapy.Spider):
                 'ctl00$content$DateScope$ddlRange': 'Y:-2',
                 'ctl00$content$DateScope$txtSDate': '2018/12/01',
                 'ctl00$content$DateScope$txtEDate': '2020/12/01',
-                'ctl00$content$hfKeyword': '韓國瑜',
+                'ctl00$content$hfKeyword': self.query,
             },
             callback=self.parseNewsList,
             dont_click=True
