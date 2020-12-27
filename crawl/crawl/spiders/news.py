@@ -5,6 +5,7 @@ class NewsSpider(scrapy.Spider):
     name = 'news'
     allowed_domains = ['kmw.chinatimes.com']
     start_urls = ['http://kmw.chinatimes.com/Login.aspx']
+    y_list = list(reversed(range(2010, 2021)))
 
     def parse(self, response):
         self.total = int(getattr(self, 'total', 30))
@@ -26,20 +27,36 @@ class NewsSpider(scrapy.Spider):
         if 'Index.aspx' not in response.request.url:
             self.logger.error('Login error.')
         else:
-            url = 'http://kmw.chinatimes.com/KMTree/TaiwanNews.aspx?query=&attr=MA0'
-            yield response.follow(url, callback=self.setSearchOptions)
+            url = 'http://kmw.chinatimes.com/News/NewsSearch.aspx?searchkind=s'
+            yield response.follow(url, callback=self.startSearch)
+
+    def startSearch(self, response):
+        for y in self.y_list:
+            if self.total < 0:
+                break
+
+            yield scrapy.FormRequest.from_response(
+                response,
+                formdata={
+                    'ctl00$ContentPlaceHolder1$btnSearch': '執行檢索',
+                    'ctl00$ContentPlaceHolder1$DateScope1$ddlRange': 'Y:-1',
+                    'ctl00$ContentPlaceHolder1$DateScope1$txtSDate': str(y)+'/01/01',
+                    'ctl00$ContentPlaceHolder1$DateScope1$txtEDate': str(y)+'/12/31',
+                    'ctl00$ContentPlaceHolder1$txtKeyword': self.query,
+                    'ctl00$ContentPlaceHolder1$ckChina': '1',
+                    'ctl00$ContentPlaceHolder1$ckBines': None,
+                    'ctl00$ContentPlaceHolder1$ckWang': None,
+                },
+                callback=self.setSearchOptions,
+                dont_click=True
+            )
 
     def setSearchOptions(self, response):
         yield scrapy.FormRequest.from_response(
             response,
             formdata={
-                '__EVENTTARGET': 'ctl00$content$ddlPageSize',
-                '__EVENTARGUMENT': '',
-                'ctl00$content$ddlPageSize': '30',
-                'ctl00$content$DateScope$ddlRange': 'Y:-2',
-                'ctl00$content$DateScope$txtSDate': '2018/12/01',
-                'ctl00$content$DateScope$txtEDate': '2020/12/01',
-                'ctl00$content$hfKeyword': self.query,
+                '__EVENTTARGET': 'ctl00$ContentPlaceHolder1$UCPage1$ddlPageSize',
+                'ctl00$ContentPlaceHolder1$UCPage1$ddlPageSize': '30',
             },
             callback=self.parseNewsList,
             dont_click=True
@@ -52,29 +69,26 @@ class NewsSpider(scrapy.Spider):
         yield scrapy.FormRequest.from_response(
             response,
             formdata={
-                '__EVENTTARGET': 'ctl00$content$lbPagerNext',
+                '__EVENTTARGET': 'ctl00$ContentPlaceHolder1$UCPage1$lbtnPageNext',
                 '__EVENTARGUMENT': '',
             },
             callback=self.parseNewsList,
             dont_click=True
         )
 
-        for news in response.css('tr'):
+        for news in response.css('.temp-gvList-row'):
+            self.total -= 1
             if self.total < 0:
                 return
 
-            if '中時' in news.css('td::text')[-1].get():
-                self.total -= 1
-                url = news.css('td')[2].css('a::attr(href)').get()
-                url = url.split('\'')[1].replace(
-                    '\\\\', '\\').replace('sKeyword=韓國瑜', 'sKeyword=')
-                print(url)
-                print(news.css('td::text')[-1].get())
-                yield response.follow(url, callback=self.parseNewsPage)
+            url = news.css('td')[4].css('a::attr(href)').get()
+            url = url.replace('sKeyword='+self.query, 'sKeyword=')
+            yield response.follow(url, callback=self.parseNewsPage)
 
     def parseNewsPage(self, response):
-        print(response.css('font::text').getall())
         title = response.css('h1::text').get()
+        date = response.css(
+            '#ctl00_ContentPlaceHolder1_UCNewsContent1_lbldateAuth::text').get().split('-')[0]
         txt = response.css('article#dvContainer').getall()[0]
         txt = txt.replace('<article class="clear-fix" id="dvContainer">', '')
         txt = txt.split('<style>')[0]
@@ -82,7 +96,7 @@ class NewsSpider(scrapy.Spider):
         author = txt[0].split()[0]
         content_block = txt[1:]
         content_block = [c.replace('\n', '').replace('\u3000', '').split()[0]
-                         for c in content_block]
+                         for c in content_block if len(c.split()) > 0]
         content = ''
         for c in content_block:
             content += '  ' + c + '\n'
@@ -90,6 +104,7 @@ class NewsSpider(scrapy.Spider):
 
         yield {
             'title': title,
+            'date': date,
             'author': author,
             'content': content
         }
