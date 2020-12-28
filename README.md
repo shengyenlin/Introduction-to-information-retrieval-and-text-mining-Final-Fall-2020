@@ -23,6 +23,8 @@ pip install scrapy
 
 ### Usage
 
+> 要在台大網路或是使用台大 VPN 下才能使用
+
 ```shell
 cd crawl
 scrapy crawl news -O ../data/news.json -a total=100 -a query=韓國瑜
