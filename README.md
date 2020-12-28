@@ -1,4 +1,4 @@
-# IRTM Final Project - 中時新聞產生器
+# IRTM Final Project - China Times Generator 中時新聞產生器
 
 ## Tree
 
@@ -28,7 +28,9 @@ cd crawl
 scrapy crawl news -O ../data/news.json -a total=100 -a query=韓國瑜
 ```
 
-- 執行趴蟲程式
+- 執行爬蟲程式
 - `-O`後的路徑為爬蟲結果輸出的檔案路徑
-- `-a total`為設定爬下來的文章數量，預設為 100
-- `-a query`為設定搜尋的關鍵字，預設為「韓國瑜」
+- `-a total`為爬下來的文章數量，預設為 100
+- `-a query`為搜尋的關鍵字，預設為「韓國瑜」
+
+此爬蟲程式將會從知識數網站抓下 2015 到 2020 年的新聞

@@ -5,7 +5,7 @@ class NewsSpider(scrapy.Spider):
     name = 'news'
     allowed_domains = ['kmw.chinatimes.com']
     start_urls = ['http://kmw.chinatimes.com/Login.aspx']
-    y_list = list(reversed(range(2010, 2021)))
+    y_list = list(reversed(range(2015, 2021)))
 
     def parse(self, response):
         self.total = int(getattr(self, 'total', 30))
