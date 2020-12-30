@@ -4,10 +4,11 @@
 
 ```
 ├── README.md
-└── crawl
-   ├── crawl
-   |  └── spiders
-   |     └── news.py                        <-- Web crawler program
+├── crawl
+|  └── crawl
+|     └── spiders
+|        └── news.py                        <-- Web crawler program
+└── data
    └── news.json                            <-- Web crawler result
 ```
 
@@ -31,7 +32,7 @@ scrapy crawl news -O ../data/news.json -a total=100 -a query=韓國瑜
 ```
 
 - 執行爬蟲程式
-- `-O`後的路徑為爬蟲結果輸出的檔案路徑
+- `-O`為爬蟲結果輸出的檔案路徑
 - `-a total`為爬下來的文章數量，預設為 100
 - `-a query`為搜尋的關鍵字，預設為「韓國瑜」
 
