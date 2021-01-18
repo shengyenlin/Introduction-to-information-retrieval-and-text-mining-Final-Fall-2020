@@ -19,11 +19,11 @@ class NewsSpider(scrapy.Spider):
         return scrapy.FormRequest.from_response(
             response,
             formdata=formdata,
-            callback=self.after_login,
+            callback=self.afterLogin,
             dont_click=True
         )
 
-    def after_login(self, response):
+    def afterLogin(self, response):
         if 'Index.aspx' not in response.request.url:
             self.logger.error('Login error.')
         else:
