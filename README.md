@@ -10,14 +10,36 @@ Please refer to `./experiment/`
 
 ## Tree
 
+
+
 ```
-├── README.md
-├── crawl
-|  └── crawl
-|     └── spiders
-|        └── news.py                        <-- Web crawler program
-└── data
-   └── news.json                            <-- Web crawler result
+Introduction-to-information-retrieval-and-text-mining-Final-Fall-2020
+ ┣ crawl
+ ┃ ┣ crawl
+ ┃ ┃ ┣ spiders
+ ┃ ┃ ┃ ┣ __init__.py
+ ┃ ┃ ┃ ┗ news.py        <-- Web crawler program
+ ┃ ┃ ┣ __init__.py
+ ┃ ┃ ┣ items.py
+ ┃ ┃ ┣ middlewares.py
+ ┃ ┃ ┣ pipelines.py
+ ┃ ┃ ┗ settings.py
+ ┃ ┗ scrapy.cfg
+ ┣ data
+ ┃ ┣ data_test.pkl
+ ┃ ┣ data_train.pkl
+ ┃ ┣ data_valid.pkl
+ ┃ ┗ news.json          <-- Web crawler result
+ ┣ data_with_punc
+ ┃ ┣ data_test_punc.pkl
+ ┃ ┣ data_train_punc.pkl
+ ┃ ┗ data_valid_punc.pkl
+ ┣ experiment
+ ┃ ┣ DataPreprocessing.ipynb <-- Preprocessing data to .pkl files
+ ┃ ┗ Experiment.ipynb <-- Model comparison and experiments
+ ┣ .gitignore
+ ┣ README.md
+ ┗ final_report.pdf                        
 ```
 
 ## Web Crawler
