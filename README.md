@@ -35,8 +35,8 @@ Introduction-to-information-retrieval-and-text-mining-Final-Fall-2020
  ┃ ┣ data_train_punc.pkl
  ┃ ┗ data_valid_punc.pkl
  ┣ experiment
- ┃ ┣ DataPreprocessing.ipynb <-- Preprocessing data to .pkl files
- ┃ ┗ Experiment.ipynb <-- Model comparison and experiments
+ ┃ ┣ DataPreprocessing.ipynb      <-- Preprocessing data to .pkl files
+ ┃ ┗ Experiment.ipynb      <-- Model comparison and experiments
  ┣ .gitignore
  ┣ README.md
  ┗ final_report.pdf                        
